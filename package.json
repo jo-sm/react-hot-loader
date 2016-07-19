@@ -4,7 +4,7 @@
   "description": "Tweak React components in real time.",
   "main": "dist/index.js",
   "files": [
-    "babel",
+    "babel/index.js",
     "dist"
   ],
   "scripts": {
