@@ -11,7 +11,7 @@
     "test": "mocha --compilers js:babel-core/register ./test",
     "test:watch": "npm run test -- --watch",
     "lint": "eslint .",
-    "build": "babel lib --out-dir dist"
+    "build": "babel lib --out-dir dist --ignore lib/babel/ && babel lib/babel --out-dir babel"
   },
   "dependencies": {
     "react": "^15.2.1",
