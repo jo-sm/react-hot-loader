@@ -2,6 +2,7 @@
 
 * [react-hot-boilerplate](https://github.com/gaearon/react-hot-boilerplate) (Bare minimum)
 * [react-starter](https://github.com/webpack/react-starter) (react-router, includes production configs)
+* [react-tape](https://github.com/fc-io/react-tape) (Babel, blue-tape, css-loader, html-webpack-plugin, production config)
 * [isomorphic-hot-loader](https://github.com/irvinebroque/isomorphic-hot-loader) (react-router, isomorphic)
 * [isomorphic-react-template](https://github.com/gpbl/isomorphic-react-template/) (react-router, isomorphic)
 * [coffee-react-quickstart](https://github.com/KyleAMathews/coffee-react-quickstart) (react-router, CoffeeScript, Gulp)
@@ -18,6 +19,9 @@
 * [react-redux-universal-hot-example](https://github.com/erikras/react-redux-universal-hot-example) (isomorphic, redux, client and server async data fetching, babel, react-router)
 * [go-starter-kit](https://github.com/olebedev/go-starter-kit) (hot reloadable golang/react/flummox/css-module isomorphic starter kit)
 * [react-fullstack-skeleton](https://github.com/fortruce/react-fullstack-skeleton) (react w/ backend api server)
+* [react-cordova-boilerplate](https://github.com/unimonkiez/react-cordova-boilerplate) (react with react-router, redux, hot loader and server-rendering for cordova)
+* [react-hot-boilerplate-ts](https://github.com/wmaurer/react-hot-boilerplate-ts) (hot reloadable typescript starter kit)
+* [Megatome](https://github.com/Levelmoney/generator-megatome) (Yeoman generator w/ dynamic switchable rendering on Node/browser, react-router, babel, isomophic, an easy config building environments, bring-your-own-data-model and docker)
 
 Don't be shy, add your own.
 
