@@ -1,6 +1,12 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = patch;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -150,33 +156,35 @@ function resolveType(type) {
   return proxy.get();
 }
 
-var createElement = React.createElement;
-function patchedCreateElement(type) {
-  // Trick React into rendering a proxy so that
-  // its state is preserved when the class changes.
-  // This will update the proxy if it's for a known type.
-  var resolvedType = resolveType(type);
+function patch() {
+  var createElement = React.createElement;
+  function patchedCreateElement(type) {
+    // Trick React into rendering a proxy so that
+    // its state is preserved when the class changes.
+    // This will update the proxy if it's for a known type.
+    var resolvedType = resolveType(type);
 
-  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return createElement.apply(undefined, [resolvedType].concat(args));
   }
+  patchedCreateElement.isPatchedByReactHotLoader = true;
 
-  return createElement.apply(undefined, [resolvedType].concat(args));
-}
-patchedCreateElement.isPatchedByReactHotLoader = true;
+  function patchedCreateFactory(type) {
+    // Patch React.createFactory to use patched createElement
+    // because the original implementation uses the internal,
+    // unpatched ReactElement.createElement
+    var factory = patchedCreateElement.bind(null, type);
+    factory.type = type;
+    return factory;
+  }
+  patchedCreateFactory.isPatchedByReactHotLoader = true;
 
-function patchedCreateFactory(type) {
-  // Patch React.createFactory to use patched createElement
-  // because the original implementation uses the internal,
-  // unpatched ReactElement.createElement
-  var factory = patchedCreateElement.bind(null, type);
-  factory.type = type;
-  return factory;
-}
-patchedCreateFactory.isPatchedByReactHotLoader = true;
-
-if (typeof global.__REACT_HOT_LOADER__ === 'undefined') {
-  React.createElement = patchedCreateElement;
-  React.createFactory = patchedCreateFactory;
-  global.__REACT_HOT_LOADER__ = hooks;
+  if (typeof global.__REACT_HOT_LOADER__ === 'undefined') {
+    React.createElement = patchedCreateElement;
+    React.createFactory = patchedCreateFactory;
+    global.__REACT_HOT_LOADER__ = hooks;
+  }
 }
