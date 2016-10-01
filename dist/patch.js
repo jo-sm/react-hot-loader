@@ -1,26 +1,12 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.default = patch;
-
-var _reactProxy = require('react-proxy');
-
-var _reactProxy2 = _interopRequireDefault(_reactProxy);
-
-var _global = require('global');
-
-var _global2 = _interopRequireDefault(_global);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var React = require('react');
+var createProxy = require('react-proxy').default;
+var global = require('global');
 
 var ComponentMap = function () {
   function ComponentMap(useWeakMap) {
@@ -127,7 +113,7 @@ var hooks = {
     // the same way as the original classes but are updatable with
     // new versions without destroying original instances.
     if (!proxiesByID[id]) {
-      proxiesByID[id] = (0, _reactProxy2.default)(type);
+      proxiesByID[id] = createProxy(type);
     } else {
       proxiesByID[id].update(type);
     }
@@ -164,35 +150,33 @@ function resolveType(type) {
   return proxy.get();
 }
 
-function patch() {
-  var createElement = React.createElement;
-  function patchedCreateElement(type) {
-    // Trick React into rendering a proxy so that
-    // its state is preserved when the class changes.
-    // This will update the proxy if it's for a known type.
-    var resolvedType = resolveType(type);
+var createElement = React.createElement;
+function patchedCreateElement(type) {
+  // Trick React into rendering a proxy so that
+  // its state is preserved when the class changes.
+  // This will update the proxy if it's for a known type.
+  var resolvedType = resolveType(type);
 
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return createElement.apply(undefined, [resolvedType].concat(args));
+  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
   }
-  patchedCreateElement.isPatchedByReactHotLoader = true;
 
-  function patchedCreateFactory(type) {
-    // Patch React.createFactory to use patched createElement
-    // because the original implementation uses the internal,
-    // unpatched ReactElement.createElement
-    var factory = patchedCreateElement.bind(null, type);
-    factory.type = type;
-    return factory;
-  }
-  patchedCreateFactory.isPatchedByReactHotLoader = true;
+  return createElement.apply(undefined, [resolvedType].concat(args));
+}
+patchedCreateElement.isPatchedByReactHotLoader = true;
 
-  if (typeof _global2.default.__REACT_HOT_LOADER__ === 'undefined') {
-    React.createElement = patchedCreateElement;
-    React.createFactory = patchedCreateFactory;
-    _global2.default.__REACT_HOT_LOADER__ = hooks;
-  }
+function patchedCreateFactory(type) {
+  // Patch React.createFactory to use patched createElement
+  // because the original implementation uses the internal,
+  // unpatched ReactElement.createElement
+  var factory = patchedCreateElement.bind(null, type);
+  factory.type = type;
+  return factory;
+}
+patchedCreateFactory.isPatchedByReactHotLoader = true;
+
+if (typeof global.__REACT_HOT_LOADER__ === 'undefined') {
+  React.createElement = patchedCreateElement;
+  React.createFactory = patchedCreateFactory;
+  global.__REACT_HOT_LOADER__ = hooks;
 }
