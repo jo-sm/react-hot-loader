@@ -10,7 +10,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var React = require('react');
 var deepForceUpdate = require('react-deep-force-update');
-var Redbox = require('redbox-react').default;
+var Redbox = require('redbox-react');
 var Component = React.Component;
 
 var AppContainer = function (_Component) {
