@@ -64,7 +64,12 @@ var AppContainer = function (_Component) {
       var error = this.state.error;
 
       if (error) {
-        return React.createElement(this.props.errorReporter, { error: error });
+        console.info('There was an error rendering this React App:');
+        console.info(error);
+
+        if (this.props && this.props.errorReporter) {
+          return React.createElement(this.props.errorReporter, { error: error });
+        }
       }
 
       if (this.props.component) {
@@ -104,6 +109,10 @@ AppContainer.propTypes = {
 
 AppContainer.defaultProps = {
   errorReporter: Redbox
+};
+
+AppContainer.propTypes = {
+  errorReporter: React.PropTypes.element
 };
 
 module.exports = AppContainer;
